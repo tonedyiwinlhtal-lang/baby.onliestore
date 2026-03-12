@@ -1,40 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Business Name</title>
-  <link rel="stylesheet" href="style.css">
-  <script defer src="script.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Baby Only Store</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#f6f6f6;
+}
+
+/* Navbar */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 40px;
+background:white;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
+position:sticky;
+top:0;
+}
+
+.logo{
+font-size:22px;
+font-weight:bold;
+color:#ff6b9c;
+}
+
+.cart{
+font-size:18px;
+cursor:pointer;
+}
+
+/* Product Grid */
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:25px;
+padding:40px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:15px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+}
+
+.card img{
+width:100%;
+border-radius:10px;
+}
+
+.price{
+color:#ff4d7a;
+font-weight:bold;
+margin:8px 0;
+}
+
+/* Button */
+
+.btn{
+background:#ff6b9c;
+border:none;
+padding:10px 14px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+}
+
+.btn:hover{
+background:#ff4d7a;
+}
+
+/* Cart Drawer */
+
+.cartBox{
+position:fixed;
+right:-400px;
+top:0;
+width:350px;
+height:100%;
+background:white;
+box-shadow:-4px 0 10px rgba(0,0,0,0.2);
+padding:20px;
+transition:0.3s;
+overflow:auto;
+}
+
+.cartBox.active{
+right:0;
+}
+
+.cartItem{
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+}
+
+/* Order Button */
+
+.orderBtn{
+width:100%;
+margin-top:20px;
+background:#2ecc71;
+}
+
+footer{
+text-align:center;
+padding:30px;
+color:#777;
+}
+
+</style>
 </head>
+
 <body>
 
-  <!-- Navbar -->
-  <header>
-    <nav class="navbar">
-      <div class="logo">YourLogo</div>
-      <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-      <div class="menu-toggle">&#9776;</div>
-    </nav>
-  </header>
+<!-- Navbar -->
 
-  <!-- Hero Section -->
-  <section id="home" class="hero">
-    <div class="hero-content">
-      <h1>Welcome to Your Business</h1>
-      <p>We provide professional solutions to help your business grow.</p>
-      <a href="#contact" class="btn">Get in Touch</a>
-    </div>
-  </section>
+<div class="navbar">
+<div class="logo">🍼 Baby Only Store</div>
+<div class="cart" onclick="toggleCart()">🛒 <span id="count">0</span></div>
+</div>
 
-  <!-- About Section -->
-  <section id="about" class="about">
-    <h2>About Us</h2>
+<!-- Products -->
+
+<div class="products" id="products"></div>
+
+<!-- Cart -->
+
+<div class="cartBox" id="cartBox">
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+
+<button class="btn orderBtn" onclick="orderTelegram()">Order via Telegram</button>
+</div>
+
+<footer>
+© 2026 Baby Only Store
+</footer>
+
+<script>
+
+const products=[
+{name:"Baby Dress",price:12,img:"https://source.unsplash.com/400x400/?baby,clothes"},
+{name:"Baby Toy",price:8,img:"https://source.unsplash.com/400x400/?baby,toy"},
+{name:"Baby Shoes",price:10,img:"https://source.unsplash.com/400x400/?baby,shoes"},
+{name:"Baby Blanket",price:15,img:"https://source.unsplash.com/400x400/?baby,blanket"},
+{name:"Baby Bottle",price:6,img:"https://source.unsplash.com/400x400/?baby,bottle"}
+];
+
+let cart=[];
+
+const productContainer=document.getElementById("products");
+
+products.forEach((p,i)=>{
+productContainer.innerHTML+=`
+<div class="card">
+<img src="${p.img}">
+<h3>${p.name}</h3>
+<div class="price">$${p.price}</div>
+<button class="btn" onclick="addCart(${i})">Add to Cart</button>
+</div>
+`
+})
+
+function addCart(i){
+
+cart.push(products[i])
+
+updateCart()
+
+}
+
+function updateCart(){
+
+document.getElementById("count").innerText=cart.length
+
+const cartItems=document.getElementById("cartItems")
+
+cartItems.innerHTML=""
+
+cart.forEach((item,index)=>{
+
+cartItems.innerHTML+=`
+<div class="cartItem">
+${item.name} - $${item.price}
+<button onclick="removeItem(${index})">❌</button>
+</div>
+`
+
+})
+
+}
+
+function removeItem(i){
+
+cart.splice(i,1)
+
+updateCart()
+
+}
+
+function toggleCart(){
+
+document.getElementById("cartBox").classList.toggle("active")
+
+}
+
+function orderTelegram(){
+
+let text="Order:%0A"
+
+cart.forEach(p=>{
+text+=p.name+" - $"+p.price+"%0A"
+})
+
+window.open(`https://t.me/yourusername?text=${text}`)
+
+}
+
+</script>
+
+</body>
+</html>    <h2>About Us</h2>
     <p>We are a modern business focused on delivering innovative solutions with a minimalistic approach. Our team is dedicated to providing top-notch services that create real value for our clients.</p>
   </section>
 
